@@ -1,0 +1,14 @@
+name: Recalbox RPi5 16K SDL
+
+on:
+  workflow_dispatch:
+
+jobs:
+  recalbox-rpi5-16k:
+    uses: ./.github/workflows/linux_build_sdl.yml
+    with:
+      jobName: Recalbox Raspberry Pi 5 16K SDL
+      artifactPrefixName: ARMSX2-Recalbox-RPi5-16K
+      os: ubuntu-22.04-arm
+      platform: arm64
+      fetchTags: true
