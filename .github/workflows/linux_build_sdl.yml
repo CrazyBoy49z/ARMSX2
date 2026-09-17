@@ -1,12 +1,7 @@
 name: Linux SDL Handheld Build Steps
 
-# ARMSX2: builds the SDL3 frontend (armsx2-sdl) for bare-kmsdrm handhelds.
-# NOT for Rocknix / Batocera — those run Wayland compositors and use the Qt
-# build. This frontend acquires its surface via Vulkan VK_KHR_display
-# direct-display (see pcsx2-sdl/Main.cpp:BuildWindowInfo), taking over the
-# display with no compositor, so it links no Qt and needs no X11/Wayland WSI.
-# Packaged as a self-contained .tar.zst rather than an AppImage (no FUSE /
-# desktop stack needed). Native aarch64 build on a GitHub arm64 runner.
+# ARMSX2 SDL3 frontend for bare-kmsdrm handhelds.
+# Recalbox/Raspberry Pi 5 branch: build for a 16 KiB host page size.
 
 on:
   workflow_call:
@@ -71,8 +66,8 @@ jobs:
         uses: actions/cache@v6
         with:
           path: .ccache
-          key: ${{ inputs.os }} ${{ inputs.platform }} sdl ccache ${{ steps.ccache_cache_timestamp.outputs.timestamp }}
-          restore-keys: ${{ inputs.os }} ${{ inputs.platform }} sdl ccache
+          key: ${{ inputs.os }} ${{ inputs.platform }} sdl-16k ccache ${{ steps.ccache_cache_timestamp.outputs.timestamp }}
+          restore-keys: ${{ inputs.os }} ${{ inputs.platform }} sdl-16k ccache
 
       - name: Install Packages
         run: |
@@ -118,7 +113,7 @@ jobs:
             -DX11_API=OFF \
             -DWAYLAND_API=OFF \
             -DDISABLE_ADVANCE_SIMD=TRUE \
-            -DOVERRIDE_HOST_PAGE_SIZE=4096 \
+            -DOVERRIDE_HOST_PAGE_SIZE=16384 \
             -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON
 
       - name: Build armsx2-sdl
